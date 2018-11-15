@@ -16,6 +16,7 @@ export default class Server {
 
     private port: number;
     private rest: restify.Server;
+    private authToken: string;
 
     constructor(port: number) {
         this.port = port;
@@ -61,13 +62,25 @@ export default class Server {
                     });
 
                 // http://localhost:4321/
-                that.rest.get("/", (req: restify.Request, res: restify.Response, next: restify.Next) => {
+                that.rest.get("/", async (req: restify.Request, res: restify.Response, next: restify.Next) => {
                     console.log('that.rest.get ' + req.url)
+
+                    // request user info
+                    let userInfo = await Server.makeGETJSONRequest(
+                        'github.ugrad.cs.ubc.ca', 
+                        '/api/v3/user?access_token=' + that.authToken);
+                    console.log('user info got');
+
+                    if (userInfo.login === undefined) {
+                        res.write(`<html><body>
+                            <a href="https://github.ugrad.cs.ubc.ca/login/oauth/authorize?client_id=${credential.client_id}">Login with GitHub</a>
+                            </body></html>`);
+                        res.end();
+                    } else {
+                        res.write('Hi ' + userInfo.login);
+                        res.end();
+                    }
                     
-                    res.write(`<html><body>
-                        <a href="https://github.ugrad.cs.ubc.ca/login/oauth/authorize?client_id=${credential.client_id}">Login with GitHub</a>
-                        </body></html>`);
-                    res.end();
                     return next();
                 });
 
@@ -95,6 +108,10 @@ export default class Server {
                         'github.ugrad.cs.ubc.ca', 
                         '/api/v3/user?access_token=' + authToken);
                     console.log('user info got');
+
+                    if (userInfo.login !== undefined) {
+                        that.authToken = authToken;
+                    }
 
                     res.write(JSON.stringify(userInfo, null, '  '));
                     res.end();
