@@ -74,7 +74,21 @@ export default class Server {
                 // callback url: http://localhost:4321/ohyeah
                 that.rest.get("/ohyeah", async (req: restify.Request, res: restify.Response, next: restify.Next) => {
                     console.log('that.rest.get ' + req.url)
-                    // TODO
+                    
+                    let tmpCode = req.params['code'];
+
+                    let data = {
+                        client_id: credential.client_id,
+                        client_secret: credential.client_secret,
+                        code: tmpCode
+                    };
+                    let postResult = await Server.makePOSTJSONRequest(
+                        'github.ugrad.cs.ubc.ca', 
+                        '/login/oauth/access_token',
+                        data);
+
+                    let authToken = postResult['access_token'];
+                    console.log('token got ' + authToken);
                 });
 
                 // This must be the last endpoint!
