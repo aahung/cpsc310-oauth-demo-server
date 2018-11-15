@@ -89,6 +89,17 @@ export default class Server {
 
                     let authToken = postResult['access_token'];
                     console.log('token got ' + authToken);
+
+                    // request user info
+                    let userInfo = await Server.makeGETJSONRequest(
+                        'github.ugrad.cs.ubc.ca', 
+                        '/api/v3/user?access_token=' + authToken);
+                    console.log('user info got');
+
+                    res.write(JSON.stringify(userInfo, null, '  '));
+                    res.end();
+
+                    return next();
                 });
 
                 // This must be the last endpoint!
