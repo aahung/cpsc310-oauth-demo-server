@@ -63,7 +63,12 @@ export default class Server {
                 // http://localhost:4321/
                 that.rest.get("/", (req: restify.Request, res: restify.Response, next: restify.Next) => {
                     console.log('that.rest.get ' + req.url)
-                    // TODO
+                    
+                    res.write(`<html><body>
+                        <a href="https://github.ugrad.cs.ubc.ca/login/oauth/authorize?client_id=${credential.client_id}">Login with GitHub</a>
+                        </body></html>`);
+                    res.end();
+                    return next();
                 });
 
                 // callback url: http://localhost:4321/ohyeah
