@@ -1,0 +1,16 @@
+{
+    "name": "HTTP-basic-auth-demo",
+    "description": "CPSC 310 Basic Auth Demo",
+    "author": "Sam Liu",
+    "license": "GPL-3.0",
+    "version": "1.0.0",
+    "devDependencies": {
+        "@types/restify": "^2.0.X",
+        "restify": "^4.3.X",
+        "typescript": "2.6.2"
+    },
+    "scripts": {
+        "build": "tsc",
+        "start": "node src/App.js"
+    }
+}
